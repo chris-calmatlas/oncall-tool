@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  h1 #{title}: #{worker.name}
+
+  p Do you really want to delete this Worker?
+
+  form(method='POST' action='')
+    div.form-group
+      input#workerid.form-control(type='hidden',name='workerid', required='true', value=worker._id )
+
+    button.btn.btn-primary(type='submit') Delete
+
+  if errors 
+    ul
+      for error in errors
+        li!= error.msg
