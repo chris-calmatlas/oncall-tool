@@ -1,4 +1,5 @@
 const Worker = require("../models/worker");
+const Schedule = require("../models/schedule");
 
 const async = require("async");
 const { body, validationResult } = require("express-validator");
@@ -76,8 +77,10 @@ exports.worker_detail = (req, res, next) => {
   async.parallel(
     {
       worker(callback) {
-        Worker.findById(req.params.id)
-        .exec(callback);
+        Worker.findById(req.params.id).exec(callback);
+      },
+      schedule_assigned(callback) {
+        Schedule.find({ worker: req.params.id }, "name").exec(callback);
       },
     },
     (err, results) => {
@@ -94,7 +97,7 @@ exports.worker_detail = (req, res, next) => {
       res.render("worker_detail", {
         title: results.worker.title,
         worker: results.worker,
-        worker_instances: results.worker_instance,
+        schedules: results.schedule_assigned,
       });
     }
   )

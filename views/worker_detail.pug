@@ -1,13 +1,15 @@
-extends layout
+extends section
 
 block content
+  h2 #{worker.name}
 
-  h1 Worker: #{worker.name}
-
-  div(style='margin-left:20px;margin-top:20px')
-
-    h3 Schedules
-    p Info goes here.
+  p #[strong Schedules:]
+  ul
+    each val, index in schedules
+      li
+        a(href=val.url) #{val.name}
+    else
+      p No schedules assigned
   hr
   p
     a(href=worker.url+'/delete') Delete worker

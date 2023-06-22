@@ -1,13 +1,13 @@
 extends section
 
 block content
-  h2#{worker.name}
+  h2 #{schedule.name}
 
-  p Do you really want to delete this Worker?
+  p Do you really want to delete this Schedule?
 
   form(method='POST' action='')
     div.form-group
-      input#workerid.form-control(type='hidden',name='workerid', required='true', value=worker._id )
+      input#scheduleid.form-control(type='hidden',name='scheduleid', required='true', value=schedule._id )
 
     button.btn.btn-primary(type='submit') Delete
 
