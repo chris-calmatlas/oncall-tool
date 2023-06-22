@@ -1,0 +1,10 @@
+extends section
+
+block content
+  ul
+    each schedule in schedule_list
+      li
+        a(href=schedule.url) #{schedule.name}
+
+    else
+      li There are no schedules.

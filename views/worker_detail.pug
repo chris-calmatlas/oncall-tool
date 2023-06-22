@@ -1,0 +1,17 @@
+extends section
+
+block content
+  h2 #{worker.name}
+
+  p #[strong Schedules:]
+  ul
+    each val, index in schedules
+      li
+        a(href=val.url) #{val.name}
+    else
+      p No schedules assigned
+  hr
+  p
+    a(href=worker.url+'/delete') Delete worker
+  p
+    a(href=worker.url+'/update') Update worker     

@@ -1,0 +1,10 @@
+extends section
+
+block content
+  ul
+    each worker in worker_list
+      li
+        a(href=worker.url) #{worker.name}
+
+    else
+      li There are no workers.

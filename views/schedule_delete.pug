@@ -1,0 +1,17 @@
+extends section
+
+block content
+  h2 #{schedule.name}
+
+  p Do you really want to delete this Schedule?
+
+  form(method='POST' action='')
+    div.form-group
+      input#scheduleid.form-control(type='hidden',name='scheduleid', required='true', value=schedule._id )
+
+    button.btn.btn-primary(type='submit') Delete
+
+  if errors 
+    ul
+      for error in errors
+        li!= error.msg
