@@ -1,4 +1,3 @@
-const schedule = require("../models/schedule");
 const Schedule = require("../models/schedule");
 const Worker = require("../models/worker");
 

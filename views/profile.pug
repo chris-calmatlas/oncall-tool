@@ -1,0 +1,12 @@
+extends section
+
+block content
+  h2 Welcome #{user.nickname}
+
+  if user.picture
+    img(src=user.picture class='mb-3 img-thumbnail')
+
+  p This is the content of "req.user" #[br]
+    small Note: #[code _raw] and #[code _json] properties have been omitted.
+
+    pre #{userProfile}
