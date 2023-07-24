@@ -92,7 +92,7 @@ exports.schedule_create_post = [
       return;
     }
 
-    // Data from the form is valid. Save the book
+    // Data from the form is valid. Save the schedule
     schedule.save((err) => {
       if (err) {
         return next(err);
