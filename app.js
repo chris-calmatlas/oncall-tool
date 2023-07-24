@@ -7,8 +7,8 @@ const dotenv = require('dotenv');
 const { auth } = require('express-openid-connect');
 
 const indexRouter = require('./routes/index');
-const userRouter = require('./routes/users');
-const workersRouter = require('./routes/workers');
+const profileRouter = require('./routes/profile');
+const usersRouter = require('./routes/users');
 const schedulesRouter = require('./routes/schedules');
 
 dotenv.load();
@@ -58,8 +58,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', userRouter);
-app.use('/workers', workersRouter);
+app.use('/profile', profileRouter);
+app.use('/users', usersRouter);
 app.use('/schedules', schedulesRouter);
 
 // catch 404 and forward to error handler

@@ -1,13 +1,13 @@
 extends section
 
 block content
-  h2#{worker.name}
+  h2#{user.name}
 
-  p Do you really want to delete this Worker?
+  p Do you really want to delete this User?
 
   form(method='POST' action='')
     div.form-group
-      input#workerid.form-control(type='hidden',name='workerid', required='true', value=worker._id )
+      input#userid.form-control(type='hidden',name='userid', required='true', value=user._id )
 
     button.btn.btn-primary(type='submit') Delete
 

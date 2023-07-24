@@ -1,5 +1,5 @@
 const Schedule = require("../models/schedule");
-const Worker = require("../models/worker");
+const User = require("../models/user");
 
 const async = require("async");
 const { body, validationResult } = require("express-validator");
@@ -24,8 +24,8 @@ exports.index = (req, res) => {
 exports.schedule_create_get = (req, res) => {
   async.parallel(
     {
-      workers(callback) {
-        Worker.find(callback);
+      users(callback) {
+        User.find(callback);
       },
     },
     (err, results) => {
@@ -34,7 +34,7 @@ exports.schedule_create_get = (req, res) => {
       }
       res.render("schedule_form", {
         title: "Add Schedule",
-        workers: results.workers,
+        users: results.users,
       });
     }
   );
@@ -50,7 +50,7 @@ exports.schedule_create_post = [
     .withMessage("Name must be specified")
     .isAlphanumeric('en-US', {ignore: ' '})
     .withMessage("Name has non-alphanumeric characters."),
-  body("worker.*").escape(),
+  body("user.*").escape(),
 
   // Process request after validation and sanitization
   (req, res, next) => {
@@ -60,30 +60,30 @@ exports.schedule_create_post = [
     // Create an schedule object with escaped and trimmed data
     const schedule = new Schedule({
       name: req.body.name,
-      worker: req.body.worker
+      user: req.body.user
     });
 
     if(!errors.isEmpty()){
       async.parallel(
         {
-          workers(callback) {
-            Worker.find(callback);
+          users(callback) {
+            User.find(callback);
           },
         },
         (err, results) => {
           if (err) {
             return next(err);
           }
-          // Mark our selected workers as checked.
-          for (const worker of results.workers) {
-            if (schedule.worker.includes(worker._id)) {
-              worker.checked = "true";
+          // Mark our selected users as checked.
+          for (const user of results.users) {
+            if (schedule.user.includes(user._id)) {
+              user.checked = "true";
             }
           }
           // Render
           res.render("schedule_form", {
             title: "Add Schedule",
-            workers: results.workers,
+            users: results.users,
             schedule,
             errors: errors.array(),
           });
@@ -109,7 +109,7 @@ exports.schedule_detail = (req, res, next) => {
     {
       schedule(callback) {
         Schedule.findById(req.params.id)
-        .populate("worker")
+        .populate("user")
         .exec(callback);
       },
     },
@@ -190,8 +190,8 @@ exports.schedule_update_get = (req, res, next) => {
       schedule(callback){
         Schedule.findById(req.params.id).exec(callback);
       },
-      workers(callback) {
-        Worker.find(callback);
+      users(callback) {
+        User.find(callback);
       },
     },
     (err, results) => {
@@ -205,11 +205,11 @@ exports.schedule_update_get = (req, res, next) => {
           return next(err);
       }
       // Success
-      // Mark our selected workers as checked.
-      for (const worker of results.workers){
-        for (const scheduleWorker of results.schedule.worker) {
-          if(worker._id.toString() === scheduleWorker._id.toString()) {
-            worker.checked = "true";
+      // Mark our selected users as checked.
+      for (const user of results.users){
+        for (const scheduleUser of results.schedule.user) {
+          if(user._id.toString() === scheduleUser._id.toString()) {
+            user.checked = "true";
           }
         }
       }
@@ -217,7 +217,7 @@ exports.schedule_update_get = (req, res, next) => {
       res.render("schedule_form", { 
         title: "Update Schedule",
         schedule: results.schedule,
-        workers: results.workers,
+        users: results.users,
       });
     }
   );
@@ -233,7 +233,7 @@ exports.schedule_update_post = [
     .withMessage("Name must be specified")
     .isAlphanumeric('en-US', {ignore: ' '})
     .withMessage("Name has non-alphanumeric characters."),
-  body("worker.*").escape(),
+  body("user.*").escape(),
   
   // Process request after validation and sanitization
   (req, res, next) => {
@@ -243,7 +243,7 @@ exports.schedule_update_post = [
     // Create an schedule object with escaped and trimmed data and old id.
     const schedule = new Schedule({
       name: req.body.name,
-      worker: req.body.worker,
+      user: req.body.user,
       _id: req.params.id,
     });
     
@@ -251,24 +251,24 @@ exports.schedule_update_post = [
       //There are errors. Render form again with sanitized values/error messages.
       async.parallel(
         {
-          workers(callback) {
-            Worker.find(callback);
+          users(callback) {
+            User.find(callback);
           },
         },
         (err, results) => {
           if (err) {
             return next(err);
           }
-          // Mark selected workers as checked
-          for (const worker of results.workers){
-            if (schedule.worker.includes(worker._id)) {
-              worker.checked = "true";
+          // Mark selected users as checked
+          for (const user of results.users){
+            if (schedule.user.includes(user._id)) {
+              user.checked = "true";
             }
           }
           // Render
           res.render("schedule_form", {
             title: "Update Schedule",
-            workers: results.workers,
+            users: results.users,
             schedule,
             errors: errors.array()
           });
