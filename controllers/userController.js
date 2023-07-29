@@ -80,7 +80,7 @@ exports.user_detail = (req, res, next) => {
         User.findById(req.params.id).exec(callback);
       },
       schedule_assigned(callback) {
-        Schedule.find({ user: req.params.id }, "name").exec(callback);
+        Schedule.find({ members: req.params.id }, "name").exec(callback);
       },
     },
     (err, results) => {

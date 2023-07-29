@@ -6,7 +6,7 @@ block content
       label(for='name') Schedule Name:
       input#name.form-control(type='text' placeholder='Name' name='name' required='true' value=(undefined===schedule ? '' : schedule.name))
     div.form-group
-      label Users:
+      label Members:
       div
         for user in users
           div(style='display: inline; padding-right:10px;')

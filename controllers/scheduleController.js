@@ -4,7 +4,7 @@ const User = require("../models/user");
 const async = require("async");
 const { body, validationResult } = require("express-validator");
 
-// Display the 
+// Display the schedules
 exports.index = (req, res) => {
   Schedule.find()
     .sort([["name", "ascending"]])
@@ -60,7 +60,7 @@ exports.schedule_create_post = [
     // Create an schedule object with escaped and trimmed data
     const schedule = new Schedule({
       name: req.body.name,
-      user: req.body.user
+      members: req.body.user
     });
 
     if(!errors.isEmpty()){
@@ -76,7 +76,7 @@ exports.schedule_create_post = [
           }
           // Mark our selected users as checked.
           for (const user of results.users) {
-            if (schedule.user.includes(user._id)) {
+            if (schedule.members.includes(user._id)) {
               user.checked = "true";
             }
           }
@@ -109,7 +109,7 @@ exports.schedule_detail = (req, res, next) => {
     {
       schedule(callback) {
         Schedule.findById(req.params.id)
-        .populate("user")
+        .populate("members")
         .exec(callback);
       },
     },
@@ -207,8 +207,8 @@ exports.schedule_update_get = (req, res, next) => {
       // Success
       // Mark our selected users as checked.
       for (const user of results.users){
-        for (const scheduleUser of results.schedule.user) {
-          if(user._id.toString() === scheduleUser._id.toString()) {
+        for (const scheduleMember of results.schedule.members) {
+          if(user._id.toString() === scheduleMember._id.toString()) {
             user.checked = "true";
           }
         }
@@ -243,7 +243,7 @@ exports.schedule_update_post = [
     // Create an schedule object with escaped and trimmed data and old id.
     const schedule = new Schedule({
       name: req.body.name,
-      user: req.body.user,
+      members: req.body.user,
       _id: req.params.id,
     });
     
@@ -261,7 +261,7 @@ exports.schedule_update_post = [
           }
           // Mark selected users as checked
           for (const user of results.users){
-            if (schedule.user.includes(user._id)) {
+            if (schedule.members.includes(user._id)) {
               user.checked = "true";
             }
           }

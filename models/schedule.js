@@ -5,6 +5,8 @@ const Schema = mongoose.Schema;
 const ScheduleSchema = new Schema({
     name: { type: String, required: true, maxLength: 100 },
     user: [{ type: Schema.Types.ObjectId, ref: "User"}],
+    members: [{ type: Schema.Types.ObjectId, ref: "User"}],
+    owner: { type: Schema.Types.ObjectId, ref: "User"},
 });
 
 // Virtual for schedule's URL

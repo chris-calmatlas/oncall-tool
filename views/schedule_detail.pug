@@ -5,7 +5,7 @@ block content
 
   p #[strong Users:]
   ul
-    each val, index in schedule.user
+    each val, index in schedule.members
       li
         a(href=val.url) #{val.name}
     else

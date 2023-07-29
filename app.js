@@ -7,7 +7,7 @@ const dotenv = require('dotenv');
 const { auth } = require('express-openid-connect');
 
 const indexRouter = require('./routes/index');
-const profileRouter = require('./routes/profile');
+const profileRouter = require('./routes/auth');
 const usersRouter = require('./routes/users');
 const schedulesRouter = require('./routes/schedules');
 
@@ -31,18 +31,18 @@ async function main() {
 
 // Auth
 const authConfig = {
-  authRequired: false,
+  authRequired: true,
   auth0Logout: true,
-  secret: process.env.SECRET,
-  baseURL: process.env.BASE_URL,
-  clientID: process.env.CLIENT_ID,
-  issuerBaseURL: process.env.ISSUER_BASE_URL
+  secret: process.env.AUTH_SECRET,
+  baseURL: process.env.AUTH_BASE_URL,
+  clientID: process.env.AUTH_CLIENT_ID,
+  issuerBaseURL: process.env.AUTH_ISSUER_BASE_URL
 };
 
-app.use(auth(authConfig));
+app.use('/auth', auth(authConfig));
 
 // Middleware to make the `user` object available for all views
-app.use(function (req, res, next) {
+app.use('/auth', function (req, res, next) {
   res.locals.user = req.oidc.user;
   next();
 });
@@ -58,9 +58,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/profile', profileRouter);
-app.use('/users', usersRouter);
-app.use('/schedules', schedulesRouter);
+app.use('/auth', profileRouter);
+app.use('/auth/users', usersRouter);
+app.use('/auth/schedules', schedulesRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

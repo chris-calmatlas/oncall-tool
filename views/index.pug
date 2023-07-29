@@ -1,4 +1,8 @@
-extends section
-
-block content
-  p This is a tool to create and manage rotating schedules. Originally developed for IT folks to generate an on-call schedule, you might use this to make any kind of rotating schedule for a group of people.
+doctype html
+html
+  include components/head.pug
+  body
+    h1= title
+    p This is a tool to create and manage rotating schedules. Originally developed for IT folks to generate an on-call schedule, you might use this to make any kind of rotating schedule for a group of people.
+    h2
+      a(href='/auth/login') Login
