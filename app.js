@@ -19,14 +19,11 @@ const app = express();
 const mongoose = require("mongoose");
 mongoose.set('strictQuery', false);
 
-const mongoDB = "mongodb+srv://cluster0.ua5m9vk.mongodb.net/OnCall?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority";
-const credentials = '../.cred/creds-jun2023.pem'
+const mongoDB = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@cluster0.ua5m9vk.mongodb.net/?retryWrites=true&w=majority`
 
 main().catch(err => console.log(err));
 async function main() {
-  await mongoose.connect(mongoDB, {
-    tlsCertificateKeyFile: credentials,
-  });
+  await mongoose.connect(mongoDB);
 }
 
 // Auth
@@ -34,7 +31,7 @@ const authConfig = {
   authRequired: true,
   auth0Logout: true,
   secret: process.env.AUTH_SECRET,
-  baseURL: process.env.AUTH_BASE_URL,
+  baseURL: process.env.APP_BASE_URL + process.env.AUTH_BASE_PATH,
   clientID: process.env.AUTH_CLIENT_ID,
   issuerBaseURL: process.env.AUTH_ISSUER_BASE_URL
 };
