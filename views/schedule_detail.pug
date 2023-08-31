@@ -3,13 +3,13 @@ extends section
 block content
   h2 #{schedule.name}
 
-  p #[strong Workers:]
+  p #[strong Users:]
   ul
-    each val, index in schedule.worker
+    each val, index in schedule.members
       li
         a(href=val.url) #{val.name}
     else
-      p No workers assigned
+      p No users assigned
   hr
   p
     a(href=schedule.url+'/delete') Delete schedule

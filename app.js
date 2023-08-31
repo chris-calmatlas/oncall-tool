@@ -1,15 +1,19 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const dotenv = require('dotenv');
+const { auth } = require('express-openid-connect');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-const workersRouter = require('./routes/workers');
+const indexRouter = require('./routes/index');
+const profileRouter = require('./routes/auth');
+const usersRouter = require('./routes/users');
 const schedulesRouter = require('./routes/schedules');
 
-var app = express();
+dotenv.load();
+
+const app = express();
 
 //set up mongoose connection
 const mongoose = require("mongoose");
@@ -25,6 +29,24 @@ async function main() {
   });
 }
 
+// Auth
+const authConfig = {
+  authRequired: true,
+  auth0Logout: true,
+  secret: process.env.AUTH_SECRET,
+  baseURL: process.env.AUTH_BASE_URL,
+  clientID: process.env.AUTH_CLIENT_ID,
+  issuerBaseURL: process.env.AUTH_ISSUER_BASE_URL
+};
+
+app.use('/auth', auth(authConfig));
+
+// Middleware to make the `user` object available for all views
+app.use('/auth', function (req, res, next) {
+  res.locals.user = req.oidc.user;
+  next();
+});
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -36,9 +58,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/workers', workersRouter);
-app.use('/schedules', schedulesRouter);
+app.use('/auth', profileRouter);
+app.use('/auth/users', usersRouter);
+app.use('/auth/schedules', schedulesRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

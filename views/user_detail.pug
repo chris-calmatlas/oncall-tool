@@ -1,7 +1,7 @@
 extends section
 
 block content
-  h2 #{worker.name}
+  h2 #{user.name}
 
   p #[strong Schedules:]
   ul
@@ -12,6 +12,6 @@ block content
       p No schedules assigned
   hr
   p
-    a(href=worker.url+'/delete') Delete worker
+    a(href=user.url+'/delete') Delete user
   p
-    a(href=worker.url+'/update') Update worker     
+    a(href=user.url+'/update') Update user     

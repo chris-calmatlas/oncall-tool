@@ -1,32 +1,32 @@
-const Worker = require("../models/worker");
+const User = require("../models/user");
 const Schedule = require("../models/schedule");
 
 const async = require("async");
 const { body, validationResult } = require("express-validator");
 
-// Display list of all workers.
+// Display list of all users.
 exports.index = (req, res) => {
-  Worker.find()
+  User.find()
     .sort([["family_name", "ascending"]])
-    .exec(function (err, list_workers) {
+    .exec(function (err, list_users) {
       if (err) {
         return next(err);
       }
       //Successful, so render
-      res.render("workers", {
-        title: "Worker List",
-        worker_list: list_workers,
+      res.render("users", {
+        title: "User List",
+        user_list: list_users,
       });
     });
 };
 
-// Display worker create form on GET.
-exports.worker_create_get = (req, res) => {
-  res.render("worker_form", { title: "Add Worker" });
+// Display user create form on GET.
+exports.user_create_get = (req, res) => {
+  res.render("user_form", { title: "Add User" });
 };
 
-// Handle worker create on POST.
-exports.worker_create_post = [
+// Handle user create on POST.
+exports.user_create_post = [
   // Validate and sanitize fileds.
   body("first_name")
     .trim()
@@ -49,91 +49,91 @@ exports.worker_create_post = [
 
     if(!errors.isEmpty()){
       //There are errors. Render form again with sanitized values/error messages.
-      res.render("worker_form", {
-        title: "Add Worker",
-        worker: req.body,
+      res.render("user_form", {
+        title: "Add User",
+        user: req.body,
         errors: errors.array(),
       });
       return;
     }
     // Data from form is valid
-    // Create an worker object with escaped and trimmed data
-    const worker = new Worker({
+    // Create an user object with escaped and trimmed data
+    const user = new User({
       first_name: req.body.first_name,
       last_name: req.body.last_name,
     });
-    worker.save((err) => {
+    user.save((err) => {
       if (err) {
         return next(err);
       }
-      // Successful - redirect to new worker record.
-      res.redirect(worker.url);
+      // Successful - redirect to new user record.
+      res.redirect(user.url);
     });
   },
 ];
 
-// Display detail page for a specific worker.
-exports.worker_detail = (req, res, next) => {
+// Display detail page for a specific user.
+exports.user_detail = (req, res, next) => {
   async.parallel(
     {
-      worker(callback) {
-        Worker.findById(req.params.id).exec(callback);
+      user(callback) {
+        User.findById(req.params.id).exec(callback);
       },
       schedule_assigned(callback) {
-        Schedule.find({ worker: req.params.id }, "name").exec(callback);
+        Schedule.find({ members: req.params.id }, "name").exec(callback);
       },
     },
     (err, results) => {
       if (err) {
         return next(err);
       }
-      if (results.worker == null) {
+      if (results.user == null) {
         // No results.
-        const err= new Error("Worker not found");
+        const err= new Error("User not found");
         err.status = 404;
         return next(err);
       }
       //Successful, so render
-      res.render("worker_detail", {
-        title: results.worker.title,
-        worker: results.worker,
+      res.render("user_detail", {
+        title: results.user.title,
+        user: results.user,
         schedules: results.schedule_assigned,
       });
     }
   )
 };
 
-// Display worker delete form on GET.
-exports.worker_delete_get = (req, res, next) => {
+// Display user delete form on GET.
+exports.user_delete_get = (req, res, next) => {
   async.parallel(
     {
-      worker(callback) {
-        Worker.findById(req.params.id).exec(callback);
+      user(callback) {
+        User.findById(req.params.id).exec(callback);
       },
     },
     (err, results) => {
       if (err) {
         return next(err);
       }
-      if (results.worker == null) {
+      if (results.user == null) {
         // No results.
-        res.redirect("/workers");
+        res.redirect("/users");
       }
       // Successful, so render.
-      res.render("worker_delete", {
-        title: "Delete Worker",
-        worker: results.worker,
+      res.render("user_delete", {
+        title: "Delete User",
+        user: results.user,
       });
     }
   );
 };
 
-// Handle worker delete on POST.
-exports.worker_delete_post = (req, res, next) => {
+// Handle user delete on POST.
+exports.user_delete_post = (req, res, next) => {
   async.parallel(
     {
-      worker(callback) {
-        Worker.findById(req.body.workerid).exec(callback);
+      user(callback) {
+        User.findById(req.body.userid).exec(callback);
       },
     },
     (err, results) => {
@@ -141,47 +141,47 @@ exports.worker_delete_post = (req, res, next) => {
         return next(err);
       }
       // Success
-      Worker.findByIdAndRemove(req.body.workerid, (err) => {
+      User.findByIdAndRemove(req.body.userid, (err) => {
         if (err) {
           return next(err);
         }
-        // Success - go to worker list
-        res.redirect("/workers");
+        // Success - go to user list
+        res.redirect("/users");
       });
     }
   );
 };
 
-// Display worker update form on GET.
-exports.worker_update_get = (req, res, next) => {
-  // Get worker
+// Display user update form on GET.
+exports.user_update_get = (req, res, next) => {
+  // Get user
   async.parallel(
     {
-      worker(callback){
-        Worker.findById(req.params.id).exec(callback);
+      user(callback){
+        User.findById(req.params.id).exec(callback);
       },
     },
     (err, results) => {
       if (err) {
         return next(err);
       }
-      if (results.worker == null) {
+      if (results.user == null) {
           // No results
-          const err = new Error("Worker not found");
+          const err = new Error("User not found");
           err.status = 404;
           return next(err);
       }
       // Success
-      res.render("worker_form", { 
-        title: "Update Worker",
-        worker: results.worker,
+      res.render("user_form", { 
+        title: "Update User",
+        user: results.user,
       });
     }
   );
 };
   
-// Handle worker update on POST.
-exports.worker_update_post = [
+// Handle user update on POST.
+exports.user_update_post = [
   // Validate and sanitize fileds.
   body("first_name")
     .trim()
@@ -204,26 +204,26 @@ exports.worker_update_post = [
 
     if(!errors.isEmpty()){
       //There are errors. Render form again with sanitized values/error messages.
-      res.render("worker_form", {
-        title: "Update Worker",
-        worker: req.body,
+      res.render("user_form", {
+        title: "Update User",
+        user: req.body,
         errors: errors.array(),
       });
       return;
     }
     // Data from form is valid
-    // Create an worker object with escaped and trimmed data and old id.
-    const updateWorker = new Worker({
+    // Create an user object with escaped and trimmed data and old id.
+    const updateUser = new User({
       first_name: req.body.first_name,
       last_name: req.body.last_name,
       _id: req.params.id,
     });
-    Worker.findByIdAndUpdate(req.params.id, updateWorker, {}, (err, worker) => {
+    User.findByIdAndUpdate(req.params.id, updateUser, {}, (err, user) => {
       if (err) {
         return next(err);
       }
-      // Successful - redirect to worker record.
-      res.redirect(worker.url);
+      // Successful - redirect to user record.
+      res.redirect(user.url);
     });
   },
 ];

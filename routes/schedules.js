@@ -4,7 +4,7 @@ var router = express.Router();
 // Require controller modules.
 const schedule_controller = require("../controllers/scheduleController");
 
-/// WORKER ROUTES ///
+/// SCHEDULE ROUTES ///
 
 // GET schedule home page.
 router.get("/", schedule_controller.index);

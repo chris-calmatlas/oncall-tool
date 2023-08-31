@@ -1,0 +1,10 @@
+extends section
+
+block content
+  ul
+    each user in user_list
+      li
+        a(href=user.url) #{user.name}
+
+    else
+      li There are no users.

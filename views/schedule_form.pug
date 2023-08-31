@@ -6,12 +6,12 @@ block content
       label(for='name') Schedule Name:
       input#name.form-control(type='text' placeholder='Name' name='name' required='true' value=(undefined===schedule ? '' : schedule.name))
     div.form-group
-      label Workers:
+      label Members:
       div
-        for worker in workers
+        for user in users
           div(style='display: inline; padding-right:10px;')
-            input.checkbox-input(type='checkbox', name='worker', id=worker._id, value=worker._id, checked=worker.checked )
-            label(for=worker._id) #{worker.name}
+            input.checkbox-input(type='checkbox', name='user', id=user._id, value=user._id, checked=user.checked )
+            label(for=user._id) #{user.name}
     button.btn.btn-primary(type='submit') Submit
   
   if errors
